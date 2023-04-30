@@ -88,22 +88,8 @@ video {
   vertical-align: baseline;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-ul::-webkit-scrollbar {
-  display: none;
-}
-
-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-body::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background-color: rgba(195, 195, 195, 0.672);
-}
-
 /* Hide scrollbar for IE, Edge and Firefox */
-ul {
+body {
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;

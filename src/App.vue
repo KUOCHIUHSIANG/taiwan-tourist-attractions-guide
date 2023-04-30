@@ -23,6 +23,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  padding-top: 64px;
 }
 
 #nav {
@@ -36,5 +37,12 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+ /* Medium devices , > 768px */
+@media screen and (min-width: 768px) {
+  #app {
+    padding-top: 80px;
+  }
 }
 </style>
