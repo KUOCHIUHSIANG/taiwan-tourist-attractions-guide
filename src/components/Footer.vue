@@ -12,8 +12,6 @@
   font-family: Noto Sans, sans-serif;
   width: 100%;
   height: 60px;
-  position: absolute;
-  bottom: 0;
   margin: 0 auto;
   background-color: $third-color;
   display: flex;
