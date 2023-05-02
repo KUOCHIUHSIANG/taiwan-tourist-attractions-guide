@@ -71,6 +71,7 @@ export default {
   height: 64px;
   width: 100%;
   padding: 21px 0;
+  background-color: #FFFFFF;
   .logo-wrapper {
     width: 118px;
     height: 30px;
