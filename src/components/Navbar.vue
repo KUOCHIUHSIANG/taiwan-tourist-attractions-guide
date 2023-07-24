@@ -70,6 +70,7 @@ export default {
   text-align: center;
   height: 64px;
   width: 100%;
+  min-width: 375px;
   padding: 21px 0;
   background-color: #FFFFFF;
   .logo-wrapper {

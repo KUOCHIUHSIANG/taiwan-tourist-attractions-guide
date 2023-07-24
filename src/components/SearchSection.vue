@@ -47,6 +47,7 @@
 @import "../assets/scss/extend";
 
 .search-section-container {
+  margin: 6px 15px 0px;
   .left-wrapper {
     letter-spacing: .03em;
     p.search-main-title {
@@ -209,6 +210,7 @@
     align-items: center;
     justify-content: center;
     text-align: left;
+    margin: 162px 27px 0px;
     .left-wrapper {
       margin-right: 77px;
       p.search-main-title {

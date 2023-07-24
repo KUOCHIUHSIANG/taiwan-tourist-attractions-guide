@@ -31,6 +31,7 @@ export default {
 
 main {
   margin-top: 64px;
+  min-width: 375px;
 }
 
 
