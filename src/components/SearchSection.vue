@@ -222,6 +222,9 @@
       p.search-sub-title {
         font-size: 20px;
         line-height: 28.96px;
+        img {
+          vertical-align: baseline;
+        }
         span {
           font-size: 18px;
           margin-left: 8px;
