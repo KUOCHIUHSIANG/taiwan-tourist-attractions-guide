@@ -2,7 +2,7 @@
   <div class="activities-container">
     <div class="activities-title">
       <h2>近期活動</h2>
-      <router-link class="view-more" to="/home/search-scenic-spot">查看更多活動
+      <router-link class="view-more" to="/home/search-activity">查看更多活動
         <img src="../assets/images/icon/arrow-rightR.png" alt="">
       </router-link>
     </div>
@@ -10,11 +10,13 @@
       <div v-for="(card, index) in cards" :key="card.id"
         class="activities-list__card">
         <div class="card-img">
-          <img src="https://www.taiwan.net.tw/att/event/32664653-b656-4e7f-bb6d-ed1b726fa3b9.jpg" alt="萬人泳渡盛況">
+          <img 
+          :src="card.picture.PictureUrl1 || require(`@/assets/images/icon/${emptyImageUrl}`)"
+          :alt="card.picture.PictureDescription1">
         </div>
         <div class="card-info">
           <div class="card-info__title">
-            <span class="date-range">{{ card.date }}</span>
+            <span class="date-range">{{ cardDateFilter[index] }}</span>
             <p class="title">
               {{ cardTitleFilter[index] }}
             </p>
@@ -22,7 +24,7 @@
           <div class="card-info__location">
             <p class="location">
               <img src="../assets/images/icon/spot.png" alt="spot-icon">
-              新北市
+              {{ card.city }}
             </p>
             <p class="more-info">
               詳細介紹
@@ -37,7 +39,13 @@
 
 <script>
 export default {
+  props: {
+    initialRecentActivities: {
+      type: Array
+    }
+  },
   created() {
+    this.cards = this.initialRecentActivities
     this.cardTitleFilter
   },
   mounted() {
@@ -48,29 +56,9 @@ export default {
   },
   data() {
     return {
-      cards: [
-        { 
-          id: "0",
-          date:"2021/10/30 - 2021/11/13",
-          title: '2021 日月潭花火音樂嘉年華'
-        },
-        {
-          id: "1",
-          date:"2022/05/25 - 2022/06/20",
-          title: '202 花火音樂嘉年華（字數限制）'
-        },
-        {
-          id: "2",
-          date:"2023/01/30 - 2023/03/17",
-          title: '2023 日月澎湖金門媽祖音樂伽年華（字數限制）舞六七八九'
-        },
-        {
-          id: "3",
-          date:"2024/01/30 - 2024/03/17",
-          title: '2024 韓國釜山金門媽祖音樂伽年華（字數限制）舞六七八九'
-        },
-      ],
-      screenWidth: document.documentElement.clientWidth
+      cards: [],
+      screenWidth: document.documentElement.clientWidth,
+      emptyImageUrl: "noImage-160x160.png"
     };
   },
   methods: {
@@ -83,19 +71,27 @@ export default {
       // 字數超過28要改成... >28
       // 字數超過15要改成... >15
       return this.cards.map((card) => {
-        if(this.screenWidth < 768 && card.title.length > 15) {
-          let newTitle = card.title.slice(0,14) + "..."
-          console.log(newTitle + "...")
-          return newTitle
-        } else if (this.screenWidth >= 768 && card.title.length > 28) {
-          let newTitle = card.title.slice(0,27) + "..."
-          console.log(newTitle + "...")
-          return newTitle
+        if(this.screenWidth < 768 && card.name.length > 15) {
+          let newName = card.name.slice(0,14) + "..."
+          console.log(newName + "...")
+          return newName
+        } else if (this.screenWidth >= 768 && card.name.length > 28) {
+          let newName = card.name.slice(0,27) + "..."
+          console.log(newName + "...")
+          return newName
         } else {
-          return card.title
+          return card.name
         }
       })
     },
+    cardDateFilter() {
+      return this.cards.map((card) => {
+        let startTime = card.startTime.slice(0,10).replace(/-/g, '/')
+        let endTime = card.endTime.slice(0,10).replace(/-/g, '/')
+        let newTime = startTime + ' - ' + endTime
+        return newTime
+      })
+    }
   }
 }
 </script>
@@ -107,24 +103,9 @@ export default {
 .activities-container {
   margin: 0 15px 0;
   .activities-title {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin: 0 auto 10px;
+    @extend %cards-list-title;
     padding: 0 4px;
     max-width: 400px;
-    h2 {
-      font-size: 24px;
-      font-weight: 300;
-    }
-    a.view-more {
-      @extend %view-more-style;
-      img {
-        width: 16px;
-        height: 15px;
-      }
-    }
-
   }
   .activities-list {
     display: flex;

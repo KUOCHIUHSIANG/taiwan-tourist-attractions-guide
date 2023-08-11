@@ -1,9 +1,24 @@
 @import './variables';
 
-%view-more-style {
-  color: $more-info;
-  font-weight: 500;
-  font-size: 16px;
+%cards-list-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 0 auto 10px;
+  h2 {
+    font-size: 24px;
+    font-weight: 300;
+  }
+  a.view-more {
+    color: $more-info;
+    font-weight: 500;
+    font-size: 16px;
+    margin: 0px 15px 0 0;
+    img {
+      width: 16px;
+      height: 15px;
+    }
+  }
 }
 
 %search-section-form-style {
