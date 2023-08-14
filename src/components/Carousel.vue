@@ -154,12 +154,15 @@ export default {
 
 <style lang="scss" scoped>
 .carousel-container {
-  margin: 38px 15px 24px;
+  margin: 38px 0 24px;
   .scenic-spot-carousel {
+    width: 345px;
+    margin: 0 auto;
     .carousel-indicators {
-      right: -40%;
       margin: 0;
       align-items: center;
+      justify-content: flex-end;
+      padding: 0 21px 10px 0;
       button {
         width: 8px;
         height: 8px;
@@ -196,11 +199,11 @@ export default {
 // Medium devices , > 768px
 @media screen and (min-width: 768px) {
   .carousel-container {
-    margin: 36px 45px;
+    margin: 36px 0;
     .scenic-spot-carousel {
+      width: 100%;
       .carousel-indicators {
-        right: -75%;
-        bottom: 5%;
+        padding: 0 40px 25px 0;
         button {
           width: 16px;
           height: 16px;

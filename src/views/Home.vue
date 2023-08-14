@@ -205,3 +205,16 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.home-container {
+  margin: 70px 15px 25px;
+}
+
+@media screen and (min-width: 768px) {
+  .home-container {
+    margin: 162px 45px 120px;
+    max-width: 1200px;
+  }
+}
+</style>

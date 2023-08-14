@@ -101,10 +101,9 @@ export default {
 @import "../assets/scss/extend";
 
 .activities-container {
-  margin: 0 15px 0;
   .activities-title {
     @extend %cards-list-title;
-    padding: 0 4px;
+    padding-left: 4px;
     max-width: 400px;
   }
   .activities-list {
@@ -155,10 +154,10 @@ export default {
 @media screen and (min-width: 768px) {
 
 .activities-container {
-  margin: 0 60px 0;
   .activities-title {
-    max-width: 1100px;
+    max-width: unset;
     align-items: center;
+    padding: 0 15px 0;
     h2 {
       font-size: 36px;
     }
@@ -239,6 +238,7 @@ export default {
       &__card {
         width: 48%;
         .card-info { 
+          width: 100%;
           padding: 8px 30px;
         }
       }

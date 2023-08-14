@@ -30,15 +30,8 @@ export default {
 }
 
 main {
-  margin-top: 64px;
   min-width: 375px;
-}
-
-
- /* Medium devices , > 768px */
-@media screen and (min-width: 768px) {
-  main {
-    margin-top: 80px;
-  }
+  max-width: 1300px;
+  margin: 0 auto;
 }
 </style>

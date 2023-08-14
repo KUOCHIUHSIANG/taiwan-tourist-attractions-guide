@@ -47,7 +47,6 @@
 @import "../assets/scss/extend";
 
 .search-section-container {
-  margin: 6px 15px 0px;
   .left-wrapper {
     letter-spacing: .03em;
     p.search-main-title {
@@ -138,6 +137,7 @@
         position: absolute;
         top: calc(100% + 7px);
         left: -1px;
+        z-index: 1;
         width: 345px;
         height: 150px;
         border: 1px solid #E5E5E5;
@@ -206,13 +206,7 @@
 // Medium devices , > 768px
 @media screen and (min-width: 768px) {
   .search-section-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: left;
-    margin: 162px 27px 0px;
     .left-wrapper {
-      margin-right: 77px;
       p.search-main-title {
         font-size: 48px;
         line-height: 69.5px;
@@ -233,10 +227,17 @@
         }
       }
     }
-    .right-wrapper {
-      .dropdown {
-        margin: unset;
-      }
+  }
+}
+
+@media screen and (min-width: 803px) {
+  .search-section-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    .left-wrapper {
+      margin-right: 77px;
     }
   }
 }

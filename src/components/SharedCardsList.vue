@@ -57,13 +57,14 @@ export default {
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/extend";
 .shared-cards-list-container {
-  margin: 20px 0 47px 15px;
+  margin: 20px 0 47px;
   &__title {
     @extend %cards-list-title;
   }
   &__list {
     display: flex;
     overflow: auto;
+    margin-right: -15px;
     &__card-wrapper {
       &__card-img {
         border-radius: 20px;
@@ -71,6 +72,9 @@ export default {
         height: 160px;
         overflow: hidden;
         margin: 0 16px 6px 0;
+        img {
+          transition: all .2s ease-out;
+        }
       }
       &__card-info {
         text-align: left;
@@ -99,8 +103,9 @@ export default {
 // Medium devices , > 768px
 @media screen and (min-width: 768px) {
   .shared-cards-list-container {
-    margin: 0 45px 0;
     &__title {
+      align-items: center;
+      padding: 0 15px 0;
       h2 {
         font-size: 36px;
       }
@@ -118,6 +123,14 @@ export default {
             margin-bottom: 6px;
           }
         }
+      }
+      &__card-wrapper:hover {
+        cursor: pointer;
+        
+          img {
+            transform: scale(1.1);
+          }
+        
       }
     }
   }
