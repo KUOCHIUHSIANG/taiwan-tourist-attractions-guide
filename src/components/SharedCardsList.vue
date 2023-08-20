@@ -49,6 +49,14 @@ export default {
       cardList: [],
       emptyImageUrl: 'noImage-255x200.png'
     }
+  },
+  watch: {
+    initialTitle(newValue) {
+      this.title = newValue
+    },
+    initialSubTitle(newValue) {
+      this.subTitle = newValue
+    }
   }
 }
 </script>
@@ -108,6 +116,7 @@ export default {
       padding: 0 15px 0;
       h2 {
         font-size: 36px;
+        letter-spacing: 1.08px;
       }
     }
     &__list {

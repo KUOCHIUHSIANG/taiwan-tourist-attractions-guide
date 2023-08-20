@@ -2,13 +2,13 @@
   <div class="home-container">
     <SearchSection />
     <Carousel />
-    <Activities :initialRecentActivities="recentActivities" />
-    <SharedCardsList :initialCardList="popularScenicSpots"
-    :initialTitle="popularScenicSpotsTitle"
-    :initialSubTitle="popularScenicSpotsSubTitle"/>
-    <SharedCardsList :initialCardList="popularRestaurants"
-    :initialTitle="popularRestaurantsTitle"
-    :initialSubTitle="popularRestaurantsSubTitle"/>
+    <Activities :initial-recent-activities="recentActivities" />
+    <SharedCardsList :initial-card-list="popularScenicSpots"
+    :initial-title="popularScenicSpotsTitle"
+    :initial-sub-title="popularScenicSpotsSubTitle"/>
+    <SharedCardsList :initial-card-list="popularRestaurants"
+    :initial-title="popularRestaurantsTitle"
+    :initial-sub-title="popularRestaurantsSubTitle"/>
   </div>
 </template>
 
@@ -18,6 +18,8 @@ import Carousel from '../components/Carousel.vue';
 import Activities from '../components/Activities.vue';
 import SharedCardsList from '../components/SharedCardsList.vue';
 
+
+// 近期活動考慮抓取當月活動並且結束日期要大於今日
 let dummyRecentActivities = [
   {
     ActivityID: "C2_315080000H_081030",
@@ -177,6 +179,7 @@ export default {
   },
   methods: {
     fetchRecentActivities() {
+      // 連API要記得抓取 Address欄位，避免可能沒有City欄位，這邊只要利用三元運算子避免City不存在，可參考ScenicSpot頁面的fetchNearbyScenicSpots
       this.recentActivities = dummyRecentActivities.map((activity) => ({
         id: activity.ActivityID,
         name: activity.ActivityName,
@@ -187,6 +190,7 @@ export default {
       }))
     },
     fetchPopularScenicSpots() {
+      // 連API要記得抓取 Address欄位，避免可能沒有City欄位，這邊只要利用三元運算子避免City不存在，可參考ScenicSpot頁面的fetchNearbyScenicSpots
       this.popularScenicSpots = dummyPopularScenicSpots.map((scenicSpot) => ({
         id: scenicSpot.ScenicSpotID,
         name: scenicSpot.ScenicSpotName,
@@ -195,6 +199,7 @@ export default {
       }))
     },
     fetchPopularRestaurants() {
+     // 連API要記得抓取 Address欄位，避免可能沒有City欄位，這邊只要利用三元運算子避免City不存在，可參考ScenicSpot頁面的fetchNearbyScenicSpots
       this.popularRestaurants = dummyPopularRestaurants.map((restaurant) => ({
         id: restaurant.RestaurantID,
         name: restaurant.RestaurantName,
@@ -208,7 +213,7 @@ export default {
 
 <style lang="scss" scoped>
 .home-container {
-  margin: 70px 15px 25px;
+  margin: 70px 15px 72px;
 }
 
 @media screen and (min-width: 768px) {

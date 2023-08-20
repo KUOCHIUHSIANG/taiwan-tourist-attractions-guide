@@ -1,5 +1,13 @@
 <template>
-  <h1>
-    Restaurant Page
-  </h1>
+  <SharedPage />
 </template>
+
+<script>
+import SharedPage from '../components/SharedPageForInsidePages.vue'
+
+export default {
+  components: {
+    SharedPage
+  },
+}
+</script>
