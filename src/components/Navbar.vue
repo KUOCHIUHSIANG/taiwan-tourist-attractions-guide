@@ -234,7 +234,7 @@ export default {
           &__nav-item {
             padding: 0;
             font-size: 18px;
-            a.router-link-exact-active {
+            a.router-link-exact-active, a.router-link-active {
               color: $main-color;
             }
             a:hover {
