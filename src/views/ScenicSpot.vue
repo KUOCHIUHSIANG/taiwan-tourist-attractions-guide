@@ -122,9 +122,9 @@ export default {
         name: scenicSpotData.ScenicSpotName,
         description: scenicSpotData.DescriptionDetail,
         phone: scenicSpotData.Phone,
-        address: scenicSpotData.Address,
+        address: scenicSpotData.Address ? scenicSpotData.Address : '未提供',
         openTime: scenicSpotData.OpenTime,
-        city: scenicSpotData.City ? scenicSpotData.City : scenicSpotData.Address.slice(0, 3),
+        city: scenicSpotData.City ? scenicSpotData.City : '未提供',
         class1: scenicSpotData.Class1,
         class2: scenicSpotData.Class2,
         class3: scenicSpotData.Class3,
@@ -142,7 +142,7 @@ export default {
       this.nearbyScenicSpots = dummyNearbyScenicSpotsData.map((scenicSpot)=> ({
         id: scenicSpot.ScenicSpotID,
         name: scenicSpot.ScenicSpotName,
-        city: scenicSpot.City ? scenicSpot.City : scenicSpot.Address.slice(0, 3),
+        city: scenicSpot.City ? scenicSpot.City : '未提供',
         picture: scenicSpot.Picture
       }))
     },
@@ -162,6 +162,8 @@ export default {
 
 <style lang="scss" scoped>
 .scenic-spot-container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 88px 15px 0;
   margin-bottom: 71px;
 }

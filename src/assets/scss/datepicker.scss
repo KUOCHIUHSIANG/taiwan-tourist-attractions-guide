@@ -1,0 +1,32 @@
+@import './variables';
+
+$default-color: $main-color;
+$primary-color: $third-color;
+
+@import '~vue2-datepicker/scss/index.scss';
+
+
+.mx-datepicker {
+  width: 345px;
+  input.mx-input {
+    height: 50px;
+    line-height: 28px;
+    border: unset;
+    box-shadow: unset;
+    border: 1px solid #E6E6E6;
+    border-radius: 5px;
+    color: $main-color;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 11px 30px;
+    &::placeholder {
+      color: $main-color;
+    }
+  }
+  .mx-icon-calendar, .mx-icon-clear {
+    right: 20px;
+    svg {
+      fill: $main-color;
+    }
+  }
+}

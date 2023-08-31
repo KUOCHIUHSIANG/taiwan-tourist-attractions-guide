@@ -21,7 +21,8 @@
       </div>
       <div class="nav-list-container">
         <div class="nav-list-container__logo-mobile">
-          <router-link to="/">
+          <router-link to="/"
+          @click.native="navListHandler()">
             <img src="../assets/images/icon/logo-mobile.png" alt="logo">
           </router-link>
         </div>

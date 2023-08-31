@@ -13,10 +13,11 @@
     <div class="right-wrapper">
       <div class="dropdown">
         <input type="checkbox" name="dropdown-toggle" id="dropdown-toggle"
+        ref="dropdownToggle"
         class="dropdown-toggle" >
         <div class="dropdown-value">
           <label for="dropdown-toggle">
-            探索景點
+            {{ dropdownValue }}
             <div class="arrow-down">
               <img src="../assets/images/icon/arrow-down.png" alt="">
             </div>
@@ -26,21 +27,57 @@
           </label> 
         </div>
         <ul class="sub-dropdown">
-          <li class="sub-dropdown-item">探索景點</li>
-          <li class="sub-dropdown-item">節慶活動</li>
-          <li class="sub-dropdown-item">品嚐美食</li>
+          <li v-for="(option, index) in dropdownOptions"
+          :key="index"
+          @click="dropdownHandler(option)"
+          class="sub-dropdown-item">{{ option }}</li>
         </ul>
       </div>
       <div class="keyword">
-        <input type="text" name="keyword" id="keyword" placeholder="你想去哪裡？請輸入關鍵字">
+        <input type="text" name="keyword" id="keyword" placeholder="你想去哪裡？請輸入關鍵字"
+        v-model="SearchKeyword"
+        >
       </div>
-      <button class="search-btn">
+      <button
+        @click="searchHandler()"
+        class="search-btn">
         <img src="../assets/images/icon/search.png" alt="search-button">
         <span>搜尋</span>
       </button>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      dropdownValue: "探索景點",
+      dropdownOptions: [
+        "探索景點",
+        "節慶活動",
+        "品嚐美食"
+      ],
+      SearchKeyword: ""
+    }
+  },
+  methods: {
+    dropdownHandler(option) {
+      this.$refs.dropdownToggle.checked = false
+      this.dropdownValue = option
+    },
+    searchHandler() {
+      let keyword = this.SearchKeyword.trim()
+      if (!keyword) {
+        this.SearchKeyword = ''
+        return
+      }
+      console.log(this.dropdownValue, keyword)
+      this.SearchKeyword = ''
+    }
+  },
+}
+</script>
 
 <style lang="scss" scoped>
 @import "../assets/scss/variables.scss";

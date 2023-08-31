@@ -28,3 +28,21 @@
   border: 1px solid #E6E6E6;
   border-radius: 5px;
 }
+
+%index-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 21px;
+  span:not(:last-child) {
+    color: $sub-color;
+  }
+  span:not(:last-child)::after {
+    content: "/";
+    margin: 0 8px;
+    color: $third-font-color;
+  }
+  span:last-child {
+    color: $third-font-color;
+  }
+}

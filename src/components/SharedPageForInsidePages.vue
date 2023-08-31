@@ -191,21 +191,7 @@ export default {
   margin-bottom: 60px;
   text-align: left;
   .index-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 21px;
-    span:not(:last-child) {
-      color: $sub-color;
-    }
-    span:not(:last-child)::after {
-      content: "/";
-      margin: 0 8px;
-      color: $third-font-color;
-    }
-    span:last-child {
-      color: $third-font-color;
-    }
+    @extend %index-title;
   }
   .picture-container {
     margin: 16px 0;

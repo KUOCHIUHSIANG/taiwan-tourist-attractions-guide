@@ -1,16 +1,15 @@
 <template>
   <div class="search-container">
-    <h1>
-      Search Page
-    </h1>
-    <h3>
-      {{ routeName }}
-    </h3>
+    <SharedSearchPage :initial-route-name="routeName"/>
   </div>
 </template>
 
 <script>
+import SharedSearchPage from '../components/SharedSearchPages.vue'
 export default {
+  components: {
+    SharedSearchPage
+  },
   data() {
     return {
       routeName: this.$route.name
@@ -26,3 +25,17 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.search-container {
+  padding: 88px 15px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 768px) {
+  .search-container {
+    padding: 140px 45px 0;
+  }
+}
+</style>
