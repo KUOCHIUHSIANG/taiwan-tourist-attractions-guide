@@ -202,7 +202,7 @@
                 card.picture.PictureUrl1 ||
                 require(`@/assets/images/icon/${emptyImageUrl}`)
               "
-              :alt="card.picture.PictureDescription1"
+              :alt="card.picture.PictureDescription1 || '未提供'"
             />
           </div>
           <div class="result-container__result__card-wrapper__card-info">
@@ -223,6 +223,7 @@
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import "../assets/scss/datepicker.scss";
+import { mapState } from 'vuex';
 
 let dummyResultData = [
   {
@@ -276,9 +277,20 @@ export default {
     initialRouteName: {
       type: String,
     },
+    initialSearchKeyword: {
+      type: String
+    },
+    initialResultList: {
+      type: Array
+    }
   },
   created() {
     this.routeName = this.initialRouteName;
+    if(this.initialSearchKeyword && this.initialResultList) {
+      this.resultList = this.initialResultList
+      this.SearchKeyword = this.initialSearchKeyword
+      this.isSearched = true
+    } 
   },
   data() {
     return {
@@ -288,123 +300,6 @@ export default {
       monthDropdownValue: null,
       foodThemeDropdownValue: "全部分類",
       SearchKeyword: "",
-      cities: [
-        {
-          id: 0,
-          name: "全部縣市",
-          nameEng: "all",
-        },
-        {
-          id: 1,
-          name: "臺北市",
-          nameEng: "Taipei",
-        },
-        {
-          id: 2,
-          name: "新北市",
-          nameEng: "NewTaipei",
-        },
-        {
-          id: 3,
-          name: "基隆市",
-          nameEng: "Keelung",
-        },
-        {
-          id: 4,
-          name: "宜蘭縣",
-          nameEng: "YilanCounty",
-        },
-        {
-          id: 5,
-          name: "桃園市",
-          nameEng: "Taoyuan",
-        },
-        {
-          id: 6,
-          name: "新竹縣",
-          nameEng: "HsinchuCounty",
-        },
-        {
-          id: 7,
-          name: "新竹市",
-          nameEng: "Hsinchu",
-        },
-        {
-          id: 8,
-          name: "苗栗縣",
-          nameEng: "MiaoliCounty",
-        },
-        {
-          id: 9,
-          name: "臺中市",
-          nameEng: "Taichung",
-        },
-        {
-          id: 10,
-          name: "彰化縣",
-          nameEng: "ChanghuaCounty",
-        },
-        {
-          id: 11,
-          name: "南投縣",
-          nameEng: "NantouCounty",
-        },
-        {
-          id: 12,
-          name: "雲林縣",
-          nameEng: "YunlinCounty",
-        },
-        {
-          id: 13,
-          name: "嘉義縣",
-          nameEng: "ChiayiCounty",
-        },
-        {
-          id: 14,
-          name: "嘉義市",
-          nameEng: "Chiayi",
-        },
-        {
-          id: 15,
-          name: "臺南市",
-          nameEng: "Tainan",
-        },
-        {
-          id: 16,
-          name: "高雄市",
-          nameEng: "Kaohsiung",
-        },
-        {
-          id: 17,
-          name: "屏東縣",
-          nameEng: "PingtungCounty",
-        },
-        {
-          id: 18,
-          name: "花蓮縣",
-          nameEng: "HualienCounty",
-        },
-        {
-          id: 19,
-          name: "臺東縣",
-          nameEng: "TaitungCounty",
-        },
-        {
-          id: 20,
-          name: "澎湖縣",
-          nameEng: "PenghuCounty",
-        },
-        {
-          id: 21,
-          name: "金門縣",
-          nameEng: "KinmenCounty",
-        },
-        {
-          id: 22,
-          name: "連江縣",
-          nameEng: "LienchiangCounty",
-        },
-      ],
       scenicTheme: [
         {
           id: 0,
@@ -523,7 +418,7 @@ export default {
       ],
       resultList: [],
       emptyImageUrl: "noImage-255x200.png",
-      isSearched: true, //記得改回false
+      isSearched: false,
     };
   },
   methods: {
@@ -594,6 +489,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(['cities']),
     placeholderFilter() {
       let placeholder = "";
       if (this.routeName === "search-scenic-spot") {
@@ -610,7 +506,18 @@ export default {
     initialRouteName(newValue) {
       this.routeName = newValue;
       this.resultList = [];
+      this.SearchKeyword = '';
+      this.isSearched = false
     },
+    // initialSearchKeyword(newValue) {
+    //   this.SearchKeyword = newValue;
+    // },
+    initialResultList(newValue) {
+      if(newValue.length > 0 ) {
+        this.SearchKeyword = '';
+      } 
+      this.resultList = newValue;
+    }
   },
 };
 </script>

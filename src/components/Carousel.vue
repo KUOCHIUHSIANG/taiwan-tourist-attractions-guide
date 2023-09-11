@@ -54,40 +54,17 @@
         ></button>
       </div>
       <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="https://www.travel.taipei/image/63327" class="d-block w-100" alt="..." />
+        <div v-for="(card, index) in cardList" :key="card.id"
+        class="carousel-item"
+        :class="{'active' : index === 0}">
+          <img v-if="card.picture.PictureUrl1 || card.picture.PictureUrl2 || card.picture.PictureUrl3" v-default-img="card.picture.PictureUrl1 || card.picture.PictureUrl2 || card.picture.PictureUrl3"
+          class="d-block w-100" 
+          :alt="card.picture.PictureDescription1" />
+          <img v-else :src="require(`@/assets/images/icon/${emptyImageUrl}`)"
+          class="d-block w-100"
+          alt="未提供" />
           <div class="carousel-caption">
-            <span>新北市 ｜ 不厭亭</span>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="https://www.travel.taipei/image/63334" class="d-block w-100" alt="..." />
-          <div class="carousel-caption">
-            <span>屏東 ｜ 墾丁</span>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="https://www.travel.taipei/image/96282" class="d-block w-100" alt="..." />
-          <div class="carousel-caption">
-            <span>基隆 ｜ 九份</span>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="https://www.travel.taipei/image/221739" class="d-block w-100" alt="..." />
-          <div class="carousel-caption">
-            <span>新北市 ｜ 南雅夜市</span>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="https://www.travel.taipei/image/63706" class="d-block w-100" alt="..." />
-          <div class="carousel-caption">
-            <span>台北市 ｜ 寧夏夜市</span>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="https://www.travel.taipei/image/214231" class="d-block w-100" alt="..." />
-          <div class="carousel-caption">
-            <span>高雄市 ｜ 夢時代</span>
+            <span>{{ card.city }} ｜ {{ card.name }}</span>
           </div>
         </div>
       </div>
@@ -119,10 +96,20 @@
 
 <script>
 export default {
+  props: {
+    initialCardList: {
+      type: Array
+    }
+  },
+  created() {
+    this.cardList = this.initialCardList
+  },
   data() {
     return { 
+      cardList: [],
       btnPrev: true,
-      btnNext: false
+      btnNext: false,
+      emptyImageUrl: 'noImage-255x200.png'
     }
   },
   methods: {
@@ -147,6 +134,11 @@ export default {
     btnReset() {
       this.btnPrev = false
       this.btnNext = false
+    }
+  },
+  watch: {
+    initialCardList(newValue) {
+      this.cardList = newValue
     }
   }
 }
@@ -182,12 +174,13 @@ export default {
       height: 185px;
       margin: 0 auto;
       .carousel-item{
+        height: 100%;
         img {
-          filter: brightness(90%);
+          filter: brightness(85%);
         }
         .carousel-caption {
           padding: 0;
-          top: 40%;
+          top: 45%;
           bottom: unset;
           font-weight: 700;
         }
@@ -221,7 +214,6 @@ export default {
         height: 400px;
         .carousel-item {
           .carousel-caption {
-            top: 25%;
             font-size: 28px;
           }
         }

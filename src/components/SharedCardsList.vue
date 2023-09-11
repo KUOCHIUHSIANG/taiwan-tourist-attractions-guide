@@ -9,8 +9,9 @@
      <div class="shared-cards-list-container__list">
       <div 
       v-for="card in cardList" :key="card.id"
+      @click="jumpHandler(card.id)"
       class="shared-cards-list-container__list__card-wrapper">
-        <div class="shared-cards-list-container__list__card-wrapper__card-img">
+        <div class="shared-cards-list-container__list__card-wrapper__card-img card-img">
           <img 
           :src="card.picture.PictureUrl1 || require(`@/assets/images/icon/${emptyImageUrl}`)"
           :alt="card.picture.PictureDescription1">
@@ -50,12 +51,27 @@ export default {
       emptyImageUrl: 'noImage-255x200.png'
     }
   },
+  methods: {
+    jumpHandler(id) {
+      let type = this.subTitle.slice(-2)
+      if(type === '景點') {
+        this.$router.push({ path: `/home/search-scenic-spot/${id}` })
+      } else if (type === '活動') {
+        this.$router.push({ path: `/home/search-activity/${id}` })
+      } else {
+        this.$router.push({ path: `/home/search-restaurant/${id}` })
+      }
+    }
+  },
   watch: {
     initialTitle(newValue) {
       this.title = newValue
     },
     initialSubTitle(newValue) {
       this.subTitle = newValue
+    },
+    initialCardList(newValue) {
+      this.cardList = newValue
     }
   }
 }
@@ -74,12 +90,15 @@ export default {
     overflow: auto;
     margin-right: -15px;
     &__card-wrapper {
+      width: 220px;
+      margin-right: 16px;
+      cursor: pointer;
       &__card-img {
         border-radius: 20px;
         width: 220px;
         height: 160px;
         overflow: hidden;
-        margin: 0 16px 6px 0;
+        margin-bottom: 6px;
         img {
           transition: all .2s ease-out;
         }
@@ -121,10 +140,12 @@ export default {
     }
     &__list {
       &__card-wrapper {
+        width: 255px;
+        margin-right: 30px;
         &__card-img {
           width: 255px;
           height: 200px;
-          margin: 0 30px 10px 0;
+          margin-bottom: 10px;
         }
         &__card-info {
           span.title {
@@ -134,12 +155,11 @@ export default {
         }
       }
       &__card-wrapper:hover {
-        cursor: pointer;
-        
-          img {
+        .card-img {
+           img {
             transform: scale(1.1);
           }
-        
+        }        
       }
     }
   }

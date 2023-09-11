@@ -8,10 +8,10 @@
     </div>
     <div class="activities-list">
       <div v-for="(card, index) in cards" :key="card.id"
+      @click="getActivityHandler(card.id)"
         class="activities-list__card">
         <div class="card-img">
-          <img 
-          :src="card.picture.PictureUrl1 || require(`@/assets/images/icon/${emptyImageUrl}`)"
+          <img v-default-img="card.picture.PictureUrl1"
           :alt="card.picture.PictureDescription1">
         </div>
         <div class="card-info">
@@ -64,6 +64,9 @@ export default {
   methods: {
     getDimensions() {
       this.screenWidth = document.documentElement.clientWidth
+    },
+    getActivityHandler(id) {
+       this.$router.push({ path: `/home/search-activity/${id}` })
     }
   },
   computed: {
@@ -73,11 +76,11 @@ export default {
       return this.cards.map((card) => {
         if(this.screenWidth < 768 && card.name.length > 15) {
           let newName = card.name.slice(0,14) + "..."
-          console.log(newName + "...")
+
           return newName
         } else if (this.screenWidth >= 768 && card.name.length > 28) {
           let newName = card.name.slice(0,27) + "..."
-          console.log(newName + "...")
+          
           return newName
         } else {
           return card.name
@@ -91,6 +94,11 @@ export default {
         let newTime = startTime + ' - ' + endTime
         return newTime
       })
+    }
+  },
+  watch: {
+    initialRecentActivities(newValue) {
+      this.cards = newValue
     }
   }
 }
@@ -111,6 +119,7 @@ export default {
     flex-direction: column;
     align-items: center;
     &__card {
+      cursor: pointer;
       min-width: 345px;
       margin-bottom: 1rem;
       border-radius: 8px;
@@ -221,7 +230,6 @@ export default {
       }
     }
     &__card:hover {
-      cursor: pointer;
       .card-img {
         img {
           transform: scale(1.1);

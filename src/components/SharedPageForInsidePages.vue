@@ -5,79 +5,83 @@
       <span v-if="routeName === 'scenic-spot'">探索景點</span>
       <span v-else-if="routeName === 'activity'">節慶活動</span>
       <span v-else-if="routeName === 'restaurant'">在地美食</span>
-      <span>宜蘭縣</span>
-      <span>羅東林業文化園區</span>
+      <span v-if="insidePageData.city !=='未提供'">{{ insidePageData.city }}</span>
+      <span>{{ insidePageData.name }}</span>
     </div>
     <div class="picture-container">
-      <img src="https://www.eastcoast-nsa.gov.tw/image/426/640x480" alt="這是綠島露營區的階梯">
+      <img v-if="insidePageData.picture.PictureUrl1"
+       v-default-img="insidePageData.picture.PictureUrl1"
+       :src="insidePageData.picture.PictureUrl1" :alt="insidePageData.picture.PictureDescription1 ">
+      <img v-else :src="require(`@/assets/images/icon/${emptyImageUrl}`)"
+      alt="未提供">
     </div>
     <div class="content-container">
-      <h1 class="content-name">羅東林業文化園區</h1>
-      <span class="hash-tag">自然風景類</span>
-      <span class="hash-tag">都會公園類</span>
-      <span class="hash-tag">其他</span>
+      <h1 class="content-name">{{ insidePageData.name }}</h1>
+      <span v-if="insidePageData.class1" class="hash-tag">{{ insidePageData.class1 }}</span>
+      <span v-if="insidePageData.class2" class="hash-tag">{{ insidePageData.class2 }}</span>
+      <span v-if="insidePageData.class3" class="hash-tag">{{ insidePageData.class3 }}</span>
       <p v-if="routeName === 'scenic-spot'" class="content-title">景點介紹：</p>
       <p v-else-if="routeName === 'activity'" class="content-title">活動介紹：</p>
       <p v-else-if="routeName === 'restaurant'" class="content-title">餐廳介紹：</p>
       <p class="content-description">
-        紫坪位在綠島最南方，緊鄰「綠島露營區」。從露營區旁的步道，可通往海岸邊的潟湖「紫坪」。「紫坪」是一處由珊瑚礁構成的潮池，也是綠島著名的潟湖所在地，有全綠島最完整的潟湖地形以及珊瑚礁植群，更有茂盛的植物水芫花和珍貴的陸寄居蟹。外海儘管浪濤洶湧，內湖依然波平如鏡，宛若沉睡的湖水，清淺的躺在外珊瑚礁岩與內珊瑚貝砂灘間；水芫花灌叢身影倒映於平靜無波的水面上，潔白柔細的白砂鋪陳水底。熱帶海岸旖旎風情，盡在不言中。
+        {{ insidePageData.description }}
       </p>
     </div>
     <div class="detail-container">
       <div v-if="routeName === 'scenic-spot'" class="detail-container__info-section">
-        <div class="info">
+        <div v-if="insidePageData.openTime" class="info">
           <span class="title">開放時間：</span>
-          06:00-19:00
+          08:00 - 22:00
         </div>
-        <div class="info">
+        <div v-if="insidePageData.phone" class="info">
           <span class="title">服務電話：</span>
-          886-3-9545114
+          {{ insidePageData.phone }}
         </div>
-        <div class="info">
+        <div v-if="insidePageData.address" class="info">
           <span class="title">景點地址：</span>
-          <a href="https://www.google.com/maps/search/?api=1&query={ PositionLat }%2C{ PositionLon }" target="_blank">臺東縣951綠島鄉溫泉路256號</a>
+          <a :href="'https://www.google.com/maps/search/?api=1&query='+ center.lat +'%2C'+ center.lng" target="_blank">{{ insidePageData.address }}</a>
         </div>
-        <div class="info">
+        <div v-if="insidePageData.websiteUrl" class="info">
           <span class="title">官方網站：</span>
-          <a href="https://www.cjwine.com/" target="_blank">https://www.cjwine.com/</a>
+          <a :href="insidePageData.websiteUrl" target="_blank">{{ insidePageData.websiteUrl }}</a>
         </div>
-        <div class="info">
+        <div v-if="insidePageData.ticketInfo" class="info">
           <span class="title">票價資訊：</span>
           免費，露營活動另計。
         </div>
-        <div class="info">
+        <div v-if="insidePageData.remarks" class="info">
           <span class="title">注意事項：</span>
-          1、紫坪上方的綠島露營區為生態保護區，禁止採集花木生物，並請維護環境整潔，讓這片美景能留與後代子孫。2、露營區目前已於2009年委由「東方之泉有限股份公司」經營，      聯絡電...
+          {{ insidePageData.remarks }}
         </div>
       </div>
       <div v-else-if="routeName === 'activity'" class="detail-container__info-section">
         <div class="info">
           <span class="title">活動時間：</span>
-          2021/02/19 00:00 - 2021/02/28 00:00
+          {{ insidePageData.startTime | formatTime }} - {{ insidePageData.endTime | formatTime }}
         </div>
-        <div class="info">
+        <div v-if="insidePageData.phone" class="info">
           <span class="title">聯絡電話：</span>
-          886-3-9545114
+          {{ insidePageData.phone }}
         </div>
-        <div class="info">
+        <div v-if="insidePageData.organizer" class="info">
           <span class="title">主辦單位：</span>
-          苗栗市公所、苗栗市民代表會
+          {{ insidePageData.organizer }}
         </div>
-        <div class="info">
+        <div v-if="insidePageData.address" class="info">
           <span class="title">活動地點：</span>
-          <a href="https://www.google.com/maps/search/?api=1&query={ PositionLat }%2C{ PositionLon }" target="_blank">臺東縣951綠島鄉溫泉路256號</a>
+          <a :href="'https://www.google.com/maps/search/?api=1&query='+ center.lat +'%2C'+ center.lng" target="_blank">{{ insidePageData.address }}</a>
         </div>
-        <div class="info">
+        <div v-if="insidePageData.websiteUrl" class="info">
           <span class="title">官方網站：</span>
-          <a href="https://www.cjwine.com/" target="_blank">https://www.cjwine.com/</a>
+          <a :href="insidePageData.websiteUrl" target="_blank">{{ insidePageData.websiteUrl }}</a>
         </div>
-        <div class="info">
+        <div v-if="insidePageData.charge" class="info">
           <span class="title">活動費用：</span>
-          免費。
+          {{ insidePageData.charge }}
         </div>
-        <div class="info">
+        <div v-if="insidePageData.remarks" class="info">
           <span class="title">注意事項：</span>
-          小心火燭
+          {{ insidePageData.remarks }}
         </div>
       </div>
       <div v-else-if="routeName === 'restaurant'" class="detail-container__info-section">
@@ -87,19 +91,19 @@
         </div>
         <div class="info">
           <span class="title">聯絡電話：</span>
-          886-49-2995096
+          {{ insidePageData.phone }}
         </div>
         <div class="info">
           <span class="title">餐廳地址：</span>
-          <a href="https://www.google.com/maps/search/?api=1&query={ PositionLat }%2C{ PositionLon }" target="_blank">臺東縣951綠島鄉溫泉路256號</a>
+          <a :href="'https://www.google.com/maps/search/?api=1&query='+ center.lat +'%2C'+ center.lng" target="_blank">{{ insidePageData.address }}</a>
         </div>
         <div class="info">
           <span class="title">官方網站：</span>
-          <a href="https://www.cjwine.com/" target="_blank">https://www.cjwine.com/</a>
+          <a :href="insidePageData.websiteUrl" target="_blank">{{ insidePageData.websiteUrl }}</a>
         </div>
       </div>
       <div class="detail-container__nearby-section">
-        <div id="map" class="google-map"></div>
+         <div id="map" class="google-map"></div>
         <div class="nearby-btn-section">
           <div class="nearby-btn-title">周邊資訊：
           </div>
@@ -124,8 +128,9 @@
 </template>
 
 <script>
-
+import { mixinFilter } from "../utils/mixin";
 export default {
+  mixins: [mixinFilter],
   props: {
     initialInsidePageData: {
       type: Object
@@ -141,14 +146,32 @@ export default {
   mounted() {
     this.initMap()
   },
-  created() {
-    this.insidePageData = { ...this.initialInsidePageData }
-  },
   data() {
     return {
       routeName: this.$route.name,
-      insidePageData: {},
-      map: null,      
+      insidePageData: {
+        address: "",
+        charge: "",
+        city: "",
+        class1: "",
+        class2: "",
+        class3: "",
+        description: "",
+        id: "",
+        name: "",
+        organizer: "",
+        phone: "",
+        picture:{
+          PictureUrl1: "www",
+          PictureDescription1: "1234"
+        },
+        position:{},
+        remarks:"",
+        startTime:"",
+        websiteUrl:"",
+      },
+      map: null,
+      emptyImageUrl: "noImage-255x200.png",
     }
   },
   methods: {
@@ -171,15 +194,19 @@ export default {
     },
   },
   watch: {
+    // 當路徑改變時獲取新路徑名稱
     $route: function(to, from) {
       if (to.path !== from.path) {
         this.routeName = this.$route.name
       }
     },
+    initialInsidePageData(newValue) {
+      this.insidePageData = { ...newValue }
+    },
     center() {
       this.initMap();
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -250,6 +277,7 @@ export default {
           margin-bottom: 8px;
         }
         a {
+          word-break: break-all;
           color: $sub-color;
           text-decoration-line: underline;
         }
@@ -278,6 +306,7 @@ export default {
             background-color: #FFF;
             border-radius: 6px;
             padding: 8px 0;
+            cursor: pointer;
             &:not(:last-child) {
               margin-bottom: 9px;
             }
@@ -383,7 +412,6 @@ export default {
                 margin-right: 30px;
               }
               &:hover {
-                cursor: pointer;
                 border: 1.33px solid $main-color;
                 .icon-scene {
                   background-image: url('../assets/images/icon/nearby-scene-btn_hover.png');

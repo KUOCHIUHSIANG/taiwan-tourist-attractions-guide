@@ -36,6 +36,7 @@
       <div class="keyword">
         <input type="text" name="keyword" id="keyword" placeholder="你想去哪裡？請輸入關鍵字"
         v-model="SearchKeyword"
+        @keypress.enter="searchHandler()"
         >
       </div>
       <button
@@ -69,11 +70,22 @@ export default {
     searchHandler() {
       let keyword = this.SearchKeyword.trim()
       if (!keyword) {
+        this.$toast.warning("請輸入關鍵字!", {
+          timeout: 2500
+        })
         this.SearchKeyword = ''
         return
+      } else {
+        if(this.dropdownValue === '探索景點') {
+          this.$router.push({ name: "search-scenic-spot", query: { keyword } })
+        } else if (this.dropdownValue === '節慶活動') {
+          this.$router.push({ name: "search-activity", query: { keyword } })
+        } else {
+          this.$router.push({ name: "search-restaurant", query: { keyword } })
+        }
+
+        this.SearchKeyword = ''
       }
-      console.log(this.dropdownValue, keyword)
-      this.SearchKeyword = ''
     }
   },
 }
