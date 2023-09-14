@@ -220,6 +220,22 @@
           </div>
         </div>
       </div>
+      <Loading :active.sync="isLoading" :is-full-page="fullPage">
+        <div class="loadingio-spinner-bean-eater-2g50jwtex7">
+          <div class="ldio-d8k2jos3ikj">
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </Loading>
     </div>
   </div>
 </template>
@@ -233,10 +249,13 @@ import store from './../store'
 import scenicSpotsAPI from "../api/scenic-spots";
 import activitiesAPI from '../api/activities';
 import restaurantsAPI from '../api/restaurants';
+import Loading from "vue-loading-overlay";
+import "../assets/css/vue-loading.css";
 
 export default {
   components: {
     DatePicker,
+    Loading
   },
   props: {
     initialRouteName: {
@@ -255,6 +274,7 @@ export default {
 
     if (this.initialResultList.length > 0) {
       this.isSearched = true
+      this.isLoading = false
     }
   },
   mounted() {
@@ -391,6 +411,8 @@ export default {
       emptyImageUrl: "noImage-255x200.png",
       isSearched: false,
       screenWidth: document.documentElement.clientWidth,
+      isLoading: true,
+      fullPage: true,
     };
   },
   methods: {
@@ -465,6 +487,7 @@ export default {
     },
     async fetchScenicSpots(engCity, theme, keyword) {
       try {
+        this.isLoading = true
         if (engCity === 'all' && theme === '全部主題') {
           const response = await scenicSpotsAPI.getScenicSpotsByKeyword({ keyword })
 
@@ -474,6 +497,8 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         } else if(engCity !== 'all' && theme === '全部主題') {
           const response = await scenicSpotsAPI.getScenicSpotsByCity({ city: engCity, keyword })
 
@@ -483,6 +508,8 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         } else if(engCity === 'all' && theme !== '全部主題') {
           const response = await scenicSpotsAPI.getScenicSpotsByTheme({ theme, keyword })
 
@@ -492,6 +519,8 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         } else {
           const response = await scenicSpotsAPI.getScenicSpotsByCityAndTheme({ city: engCity, theme, keyword })
 
@@ -501,8 +530,11 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         }
       } catch(error) {
+        this.isLoading = false
         if(error.response.status === 401) {
           store.dispatch("getToken");
           this.$toast.success("憑證失效，已重新取得憑證，請重新搜尋!", {
@@ -515,6 +547,7 @@ export default {
     },
     async fetchActivities(engCity, originalDate, theme, keyword) {
       try {
+        this.isLoading = true
         /* 沒選月份-- 選擇月份  */
         if (originalDate ==='選擇月份') {
           if (engCity === 'all' && theme === '全部主題') {
@@ -527,6 +560,8 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             }));
+
+            this.isLoading = false
           } else if (engCity !== 'all' && theme === '全部主題') {
             // 只選縣市
             const response = await activitiesAPI.getActivitiesByCity({ city: engCity, keyword })
@@ -537,6 +572,8 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             })); 
+
+            this.isLoading = false
           } else if (engCity === 'all' && theme !== '全部主題') {
             // 只選主題
             const response = await activitiesAPI.getActivitiesByTheme({ theme, keyword })
@@ -547,6 +584,8 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             }));
+
+            this.isLoading = false
           } else {
             // 縣市＋主題
             const response = await activitiesAPI.getActivitiesByCityAndTheme({ city: engCity, theme, keyword })
@@ -557,6 +596,8 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             }));
+
+            this.isLoading = false
           }
         } else {
           /* 選月份 */
@@ -573,6 +614,8 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             }));
+
+            this.isLoading = false
           } else if (engCity !== 'all' && theme === '全部主題') {
             // 選了縣市＋日期
             const response = await activitiesAPI.getActivitiesByCityAndDate({ city: engCity, year, month, keyword })
@@ -583,6 +626,8 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             }));
+
+            this.isLoading = false
           } else if (engCity === 'all' && theme !== '全部主題') {
             // 選了日期＋主題 
             const response = await activitiesAPI.getActivitiesByDateAndTheme({ year, month, theme, keyword })
@@ -593,6 +638,8 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             }));
+
+            this.isLoading = false
           } else {
             console.log('選了月份---', engCity, year, month, theme, keyword)
             // 全選 
@@ -604,9 +651,12 @@ export default {
               city: result.City ? result.City : "未提供",
               picture: result.Picture,
             }));
+
+            this.isLoading = false
           } 
         }
       } catch(error) {
+        this.isLoading = false
         if(error.response.status === 401) {
           store.dispatch("getToken");
           this.$toast.success("憑證失效，已重新取得憑證，請重新搜尋!", {
@@ -619,6 +669,7 @@ export default {
     },
     async fetchRestaurants(engCity, theme, keyword) {
       try {
+        this.isLoading = true
         if (engCity === 'all' && theme === '全部分類') {
           const response = await restaurantsAPI.getRestaurantsByKeyword({ keyword })
 
@@ -628,6 +679,8 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         } else if(engCity !== 'all' && theme === '全部分類') {
           const response = await restaurantsAPI.getRestaurantsByCity({ city: engCity, keyword })
 
@@ -637,6 +690,8 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         } else if(engCity === 'all' && theme !== '全部分類') {
           const response = await restaurantsAPI.getRestaurantsByTheme({ theme, keyword })
 
@@ -646,6 +701,8 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         } else {
           const response = await restaurantsAPI.getRestaurantsByCityAndTheme({ city: engCity, theme, keyword })
 
@@ -655,8 +712,11 @@ export default {
             city: result.City ? result.City : "未提供",
             picture: result.Picture,
           }));
+
+          this.isLoading = false
         }
       } catch(error) {
+        this.isLoading = false
         if(error.response.status === 401) {
           store.dispatch("getToken");
           this.$toast.success("憑證失效，已重新取得憑證，請重新搜尋!", {
@@ -705,6 +765,7 @@ export default {
       this.resultList = [];
       this.SearchKeyword = '';
       this.isSearched = false
+      this.isLoading = false
     },
     initialSearchKeyword(newValue) {
       this.SearchKeyword = newValue;
@@ -715,6 +776,7 @@ export default {
       } 
       this.resultList = newValue;
       this.isSearched = true
+      this.isLoading = false
     },
     resultList(newValue) {
       if(newValue.length > 0 ) {
@@ -722,6 +784,7 @@ export default {
       }
       this.resultList = newValue
       this.isSearched = true
+      this.isLoading = false
     },
     $route: function(to, from) {
       if (to.path !== from.path) {

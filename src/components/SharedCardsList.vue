@@ -6,7 +6,7 @@
         <img src="../assets/images/icon/arrow-rightR.png" alt="">
       </router-link>
      </div>
-     <div class="shared-cards-list-container__list">
+     <div class="shared-cards-list-container__list" style="position: relative">
       <div 
       v-for="card in cardList" :key="card.id"
       @click="jumpHandler(card.id)"
@@ -24,12 +24,34 @@
           <span class="location"><img src="../assets/images/icon/spot.png" alt="spot-icon">{{ card.city }}</span>
         </div>
       </div>
+      <Loading :active.sync="isLoading" :is-full-page="fullPage">
+        <div class="loadingio-spinner-bean-eater-2g50jwtex7">
+          <div class="ldio-d8k2jos3ikj">
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </Loading>
      </div>
   </div>
 </template>
 
 <script>
+import Loading from "vue-loading-overlay";
+import "../assets/css/vue-loading.css";
+
 export default {
+  components: {
+    Loading,
+  },
   props: {
     initialTitle: {
       type: String
@@ -44,13 +66,19 @@ export default {
   created() {
     this.title = this.initialTitle
     this.subTitle = this.initialSubTitle
+    this.cardList = this.initialCardList
+    if (this.initialCardList.length !== 0) {
+      this.isLoading = false
+    }
   },
   data() {
     return {
       title: "",
       subTitle: "",
       cardList: [],
-      emptyImageUrl: 'noImage-255x200.png'
+      emptyImageUrl: 'noImage-255x200.png',
+      isLoading: true,
+      fullPage: false,
     }
   },
   methods: {
@@ -74,6 +102,7 @@ export default {
     },
     initialCardList(newValue) {
       this.cardList = newValue
+      this.isLoading = false
     }
   }
 }

@@ -54,19 +54,52 @@
         ></button>
       </div>
       <div class="carousel-inner">
-        <div v-for="(card, index) in cardList" :key="card.id"
-        class="carousel-item"
-        :class="{'active' : index === 0}">
-          <img v-if="card.picture.PictureUrl1 || card.picture.PictureUrl2 || card.picture.PictureUrl3" v-default-img="card.picture.PictureUrl1 || card.picture.PictureUrl2 || card.picture.PictureUrl3"
-          class="d-block w-100" 
-          :alt="card.picture.PictureDescription1" />
-          <img v-else :src="require(`@/assets/images/icon/${emptyImageUrl}`)"
-          class="d-block w-100"
-          alt="未提供" />
+        <div
+          v-for="(card, index) in cardList"
+          :key="card.id"
+          class="carousel-item"
+          :class="{ active: index === 0 }"
+        >
+          <img
+            v-if="
+              card.picture.PictureUrl1 ||
+              card.picture.PictureUrl2 ||
+              card.picture.PictureUrl3
+            "
+            v-default-img="
+              card.picture.PictureUrl1 ||
+              card.picture.PictureUrl2 ||
+              card.picture.PictureUrl3
+            "
+            class="d-block w-100"
+            :alt="card.picture.PictureDescription1"
+          />
+          <img
+            v-else
+            :src="require(`@/assets/images/icon/${emptyImageUrl}`)"
+            class="d-block w-100"
+            alt="未提供"
+          />
           <div class="carousel-caption">
             <span>{{ card.city }} ｜ {{ card.name }}</span>
           </div>
         </div>
+        <Loading :active.sync="isLoading" :is-full-page="fullPage">
+          <div class="loadingio-spinner-bean-eater-2g50jwtex7">
+            <div class="ldio-d8k2jos3ikj">
+              <div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+              <div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </Loading>
       </div>
       <button
         @click="btnPrevDisable()"
@@ -95,50 +128,60 @@
 </template>
 
 <script>
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
+import "../assets/css/vue-loading.css";
+
 export default {
+  components: {
+    Loading,
+  },
   props: {
     initialCardList: {
-      type: Array
-    }
+      type: Array,
+    },
   },
   data() {
-    return { 
+    return {
       cardList: [],
       btnPrev: true,
       btnNext: false,
-      emptyImageUrl: 'noImage-255x200.png'
-    }
+      emptyImageUrl: "noImage-255x200.png",
+      isLoading: true,
+      fullPage: false,
+    };
   },
   methods: {
     btnPrevDisable() {
-      this.btnNext = false
-      let prev = this.$refs.indicatorPrev.classList.contains('active')
-      if(prev) {
-        this.btnPrev = true
+      this.btnNext = false;
+      let prev = this.$refs.indicatorPrev.classList.contains("active");
+      if (prev) {
+        this.btnPrev = true;
       } else {
-        this.btnPrev = false
+        this.btnPrev = false;
       }
     },
     btnNextDisable() {
-      this.btnPrev = false
-      let next = this.$refs.indicatorNext.classList.contains('active')
-      if(next) {
-        this.btnNext = true
+      this.btnPrev = false;
+      let next = this.$refs.indicatorNext.classList.contains("active");
+      if (next) {
+        this.btnNext = true;
       } else {
-        this.btnNext = false
+        this.btnNext = false;
       }
     },
     btnReset() {
-      this.btnPrev = false
-      this.btnNext = false
-    }
+      this.btnPrev = false;
+      this.btnNext = false;
+    },
   },
   watch: {
     initialCardList(newValue) {
-      this.cardList = newValue
-    }
-  }
-}
+      this.cardList = newValue;
+      this.isLoading = false;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -156,12 +199,12 @@ export default {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background-color: #C4C4C4;
+        background-color: #c4c4c4;
         opacity: unset;
         &.active {
           width: 10px;
           height: 10px;
-          background-color: #FFFFFF;
+          background-color: #ffffff;
         }
       }
     }
@@ -170,7 +213,7 @@ export default {
       width: 345px;
       height: 185px;
       margin: 0 auto;
-      .carousel-item{
+      .carousel-item {
         height: 100%;
         img {
           filter: brightness(85%);
@@ -218,31 +261,31 @@ export default {
       button {
         opacity: unset;
         .carousel-control-next-icon {
-          background-image: url('../assets/images/icon/carousel-arrow-right.png');
+          background-image: url("../assets/images/icon/carousel-arrow-right.png");
         }
         .carousel-control-prev-icon {
-          background-image: url('../assets/images/icon/carousel-arrow-left.png');
+          background-image: url("../assets/images/icon/carousel-arrow-left.png");
         }
-        .carousel-control-next-icon, 
+        .carousel-control-next-icon,
         .carousel-control-prev-icon {
           width: 40px;
           height: 40px;
         }
         &:hover {
           .carousel-control-next-icon {
-            background-image: url('../assets/images/icon/carousel-arrow-right-hover.png');
+            background-image: url("../assets/images/icon/carousel-arrow-right-hover.png");
           }
           .carousel-control-prev-icon {
-            background-image: url('../assets/images/icon/carousel-arrow-left-hover.png');
+            background-image: url("../assets/images/icon/carousel-arrow-left-hover.png");
           }
         }
         &.disabled {
           pointer-events: none;
           .carousel-control-next-icon {
-            background-image: url('../assets/images/icon/carousel-arrow-right-disable.png');
+            background-image: url("../assets/images/icon/carousel-arrow-right-disable.png");
           }
           .carousel-control-prev-icon {
-            background-image: url('../assets/images/icon/carousel-arrow-left-disable.png');
+            background-image: url("../assets/images/icon/carousel-arrow-left-disable.png");
           }
         }
       }

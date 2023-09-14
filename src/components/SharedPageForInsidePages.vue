@@ -130,6 +130,22 @@
         </div>
       </div>
     </div>
+    <Loading :active.sync="isLoading" :is-full-page="fullPage">
+        <div class="loadingio-spinner-bean-eater-2g50jwtex7">
+          <div class="ldio-d8k2jos3ikj">
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+    </Loading>
   </div>
 </template>
 
@@ -139,9 +155,14 @@ import scenicSpotsAPI from "../api/scenic-spots";
 import activitiesAPI from '../api/activities';
 import restaurantsAPI from '../api/restaurants';
 import store from "./../store";
+import Loading from "vue-loading-overlay";
+import "../assets/css/vue-loading.css";
 
 export default {
   mixins: [mixinFilter],
+  components: {
+    Loading,
+  },
   props: {
     initialInsidePageData: {
       type: Object
@@ -183,6 +204,8 @@ export default {
       },
       map: null,
       emptyImageUrl: "noImage-255x200.png",
+      isLoading: true,
+      fullPage: true,
     }
   },
   methods: {
@@ -299,6 +322,7 @@ export default {
     },
     initialInsidePageData(newValue) {
       this.insidePageData = { ...newValue }
+      this.isLoading = false
     },
     center() {
       this.initMap();

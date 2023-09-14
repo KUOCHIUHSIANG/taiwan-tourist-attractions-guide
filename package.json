@@ -16,6 +16,7 @@
     "moment": "^2.29.4",
     "sass": "^1.58.3",
     "vue": "^2.7.14",
+    "vue-loading-overlay": "^3.4.3",
     "vue-router": "^3.6.5",
     "vue-toastification": "^1.7.14",
     "vue2-datepicker": "^3.11.1",
