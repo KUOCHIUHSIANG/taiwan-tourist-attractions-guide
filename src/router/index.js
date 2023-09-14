@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import NotFound from '../views/NotFound.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import NotFound from "../views/NotFound.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
@@ -20,6 +20,7 @@ const routes = [
     path: "/home/search-scenic-spot",
     name: "search-scenic-spot",
     component: () => import("../views/Search.vue"),
+    props: (route) => route.params,
   },
   {
     path: "/home/search-scenic-spot/:ScenicSpotID",
@@ -30,6 +31,7 @@ const routes = [
     path: "/home/search-activity",
     name: "search-activity",
     component: () => import("../views/Search.vue"),
+    props: (route) => route.params,
   },
   {
     path: "/home/search-activity/:ActivityID",
@@ -40,6 +42,7 @@ const routes = [
     path: "/home/search-restaurant",
     name: "search-restaurant",
     component: () => import("../views/Search.vue"),
+    props: (route) => route.params,
   },
   {
     path: "/home/search-restaurant/:RestaurantID",
@@ -60,4 +63,4 @@ const router = new VueRouter({
   },
 });
 
-export default router
+export default router;

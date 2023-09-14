@@ -35,7 +35,7 @@
       </div>
       <div class="keyword">
         <input type="text" name="keyword" id="keyword" placeholder="你想去哪裡？請輸入關鍵字"
-        v-model="SearchKeyword"
+        v-model.trim="SearchKeyword"
         @keypress.enter="searchHandler()"
         >
       </div>
@@ -68,10 +68,10 @@ export default {
       this.dropdownValue = option
     },
     searchHandler() {
-      let keyword = this.SearchKeyword.trim()
+      let keyword = this.SearchKeyword
       if (!keyword) {
         this.$toast.warning("請輸入關鍵字!", {
-          timeout: 2500
+          timeout: 1500
         })
         this.SearchKeyword = ''
         return
@@ -83,7 +83,6 @@ export default {
         } else {
           this.$router.push({ name: "search-restaurant", query: { keyword } })
         }
-
         this.SearchKeyword = ''
       }
     }

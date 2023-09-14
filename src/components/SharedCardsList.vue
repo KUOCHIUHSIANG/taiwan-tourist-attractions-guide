@@ -12,9 +12,12 @@
       @click="jumpHandler(card.id)"
       class="shared-cards-list-container__list__card-wrapper">
         <div class="shared-cards-list-container__list__card-wrapper__card-img card-img">
-          <img 
-          :src="card.picture.PictureUrl1 || require(`@/assets/images/icon/${emptyImageUrl}`)"
-          :alt="card.picture.PictureDescription1">
+          <img v-if="card.picture.PictureUrl1"
+          v-default-img="card.picture.PictureUrl1"
+          :alt="card.picture.PictureDescription1" />
+          <img v-else
+          :src="require(`@/assets/images/icon/${emptyImageUrl}`)"
+          alt="未提供" />
         </div>
         <div class="shared-cards-list-container__list__card-wrapper__card-info">
           <span class="title">{{ card.name }}</span>

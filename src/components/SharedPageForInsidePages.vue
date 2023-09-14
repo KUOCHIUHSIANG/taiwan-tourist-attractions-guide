@@ -85,19 +85,19 @@
         </div>
       </div>
       <div v-else-if="routeName === 'restaurant'" class="detail-container__info-section">
-        <div class="info">
+        <div v-if="insidePageData.openTime" class="info">
           <span class="title">營業時間：</span>
           上午11:00~14:30下午17:00~21:00
         </div>
-        <div class="info">
+        <div v-if="insidePageData.phone" class="info">
           <span class="title">聯絡電話：</span>
           {{ insidePageData.phone }}
         </div>
-        <div class="info">
+        <div v-if="insidePageData.address" class="info">
           <span class="title">餐廳地址：</span>
           <a :href="'https://www.google.com/maps/search/?api=1&query='+ center.lat +'%2C'+ center.lng" target="_blank">{{ insidePageData.address }}</a>
         </div>
-        <div class="info">
+        <div v-if="insidePageData.websiteUrl" class="info">
           <span class="title">官方網站：</span>
           <a :href="insidePageData.websiteUrl" target="_blank">{{ insidePageData.websiteUrl }}</a>
         </div>
@@ -108,15 +108,21 @@
           <div class="nearby-btn-title">周邊資訊：
           </div>
           <div class="nearby-btn-wrapper">
-            <div class="nearby-scenic-spots-btn nearby-btn">
+            <div 
+            @click="fetchNearbyScenicSpots"
+            class="nearby-scenic-spots-btn nearby-btn">
               <div class="nearby-btn-icon icon-scene"></div>
               <span>附近景點</span>
             </div>
-            <div class="nearby-activities-btn nearby-btn">
+            <div
+            @click="fetchNearbyActivities"
+             class="nearby-activities-btn nearby-btn">
               <div class="nearby-btn-icon icon-event"></div>
               <span>附近活動</span>
             </div>
-            <div class="nearby-restaurants-btn nearby-btn">
+            <div
+            @click="fetchNearbyRestaurants"
+            class="nearby-restaurants-btn nearby-btn">
               <div class="nearby-btn-icon icon-food"></div>
               <span>附近美食</span>
             </div>
@@ -129,6 +135,11 @@
 
 <script>
 import { mixinFilter } from "../utils/mixin";
+import scenicSpotsAPI from "../api/scenic-spots";
+import activitiesAPI from '../api/activities';
+import restaurantsAPI from '../api/restaurants';
+import store from "./../store";
+
 export default {
   mixins: [mixinFilter],
   props: {
@@ -192,6 +203,92 @@ export default {
         map: this.map
       })
     },
+    async fetchNearbyScenicSpots() {
+      try {
+        const amount = 30
+        const response = await scenicSpotsAPI.getNearbyScenicSpots(this.insidePageData.id, this.center.lat, this.center.lng, amount)
+
+        const resultData = response.data.map((result)=> ({
+          id: result.ScenicSpotID,
+          name: result.ScenicSpotName,
+          picture: result.Picture,
+          city: result.City ? result.City : '未提供'
+        }))
+
+        this.$router.push({
+          name: 'search-scenic-spot',
+          params: {
+            routerResultList: resultData
+          }
+        })
+      } catch(error) {
+         if(error.response.status === 401) {
+            store.dispatch("getToken");
+            this.fetchNearbyScenicSpots()
+          } else {
+            console.log(error)
+          }
+      }
+    },
+    async fetchNearbyActivities() {
+      try{
+        const amount = 30
+        const date = new Date();
+        const year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        const response = await activitiesAPI.getNearbyActivities(this.insidePageData.id, year, month, day, this.center.lat, this.center.lng, amount)
+        
+        const resultData = response.data.map((result)=> ({
+          id: result.ActivityID,
+          name: result.ActivityName,
+          picture: result.Picture,
+          city: result.City ? result.City : '未提供'
+        }))
+        
+        this.$router.push({
+          name: 'search-activity',
+          params: {
+            routerResultList: resultData
+          }
+        })
+      } catch(error) {
+        if(error.response.status === 401) {
+          store.dispatch("getToken");
+          this.fetchNearbyActivities()
+        } else {
+          console.log(error)
+        }
+      }
+    },
+    async fetchNearbyRestaurants() {
+      try {
+        const amount = 30
+        const response = await restaurantsAPI.getNearbyRestaurants(this.insidePageData.id, this.center.lat, this.center.lng, amount)
+
+        const resultData = response.data.map((result)=> ({
+          id: result.RestaurantID,
+          name: result.RestaurantName,
+          picture: result.Picture,
+          city: result.City ? result.City : '未提供'
+        }))
+
+        this.$router.push({
+          name: 'search-restaurant',
+          params: {
+            routerResultList: resultData
+          }
+        })
+      } catch(error) {
+        if(error.response.status === 401) {
+          store.dispatch("getToken");
+          this.fetchNearbyRestaurants()
+        } else {
+          console.log(error)
+        }
+      }
+    }
   },
   watch: {
     // 當路徑改變時獲取新路徑名稱

@@ -64,7 +64,7 @@ export default {
           }
 
           let city = this.cities[pick].engName
-          let response = await scenicSpotsAPI.getCityScenicSpots(city)
+          const response = await scenicSpotsAPI.getCityScenicSpots(city)
          
           this.randomCarouselScenicSpots.push({
             id: response.data[0].ScenicSpotID,
@@ -89,7 +89,7 @@ export default {
         let month = date.getMonth() + 1;
         let day = date.getDate();
 
-        let response = await activitiesAPI.getRecentActivities({year, month, day})
+        const response = await activitiesAPI.getRecentActivities({year, month, day})
 
         if (response.statusText !== "OK") {
           throw new Error(response);
@@ -115,7 +115,7 @@ export default {
     },
     async fetchPopularScenicSpots() {
       try {
-        let response = await scenicSpotsAPI.getPopularScenicSpots()
+        const response = await scenicSpotsAPI.getPopularScenicSpots()
 
         if (response.statusText !== "OK") {
           throw new Error(response);
@@ -138,7 +138,7 @@ export default {
     },
     async fetchPopularRestaurants() {
      try {
-      let response = await restaurantsAPI.getPopularRestaurants() 
+      const response = await restaurantsAPI.getPopularRestaurants() 
 
       if (response.statusText !== "OK") {
         throw new Error(response);

@@ -116,7 +116,8 @@
           name="keyword"
           id="keyword"
           :placeholder="placeholderFilter"
-          v-model="SearchKeyword"
+          v-model.trim="SearchKeyword"
+          @keypress.enter="searchHandler()"
         />
       </div>
       <button @click="searchHandler()" class="search-btn">
@@ -192,21 +193,25 @@
       </div>
       <div v-else class="result-container__result">
         <div
-          v-for="card in resultList"
+          v-for="(card, index) in resultList"
           :key="card.id"
+          @click="jumpHandler(card.id)"
           class="result-container__result__card-wrapper"
         >
-          <div class="result-container__result__card-wrapper__card-img">
-            <img
+          <div class="result-container__result__card-wrapper__card-img card-img">
+            <img v-if="card.picture.PictureUrl1"
+            v-default-img="card.picture.PictureUrl1"
+              :alt="card.picture.PictureDescription1"
+            />
+            <img v-else
               :src="
-                card.picture.PictureUrl1 ||
                 require(`@/assets/images/icon/${emptyImageUrl}`)
               "
-              :alt="card.picture.PictureDescription1 || '未提供'"
+              alt="未提供"
             />
           </div>
           <div class="result-container__result__card-wrapper__card-info">
-            <span class="title">{{ card.name }}</span>
+            <span class="title">{{ cardTitleFilter[index] }}</span>
             <span class="location"
               ><img src="../assets/images/icon/spot.png" alt="spot-icon" />{{
                 card.city
@@ -224,50 +229,10 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import "../assets/scss/datepicker.scss";
 import { mapState } from 'vuex';
-
-let dummyResultData = [
-  {
-    ScenicSpotID: "C1_315080500H_000073",
-    ScenicSpotName: "帆船鼻大草原",
-    Address: "臺東縣951綠島鄉溫泉路167號",
-    Picture: {
-      PictureUrl1: "https://www.eastcoast-nsa.gov.tw/image/29072/640x480",
-      PictureDescription1: "鳥瞰帆船鼻大草原",
-    },
-    SrcUpdateTime: "2023-08-17T01:43:16+08:00",
-    UpdateTime: "2023-08-17T02:22:01+08:00",
-  },
-  {
-    ScenicSpotID: "C1_315080500H_000098",
-    ScenicSpotName: "哈巴狗與睡美人岩",
-    Address: "臺東縣951綠島鄉環島公路8公里處",
-    Picture: {
-      PictureUrl1: "https://www.eastcoast-nsa.gov.tw/image/29064/640x480",
-      PictureDescription1: "哈巴狗與睡美人岩的美麗海灣",
-    },
-    SrcUpdateTime: "2023-08-17T01:43:16+08:00",
-    UpdateTime: "2023-08-17T02:22:01+08:00",
-  },
-  {
-    ScenicSpotID: "C1_315080500H_000167",
-    ScenicSpotName: "柴口浮潛區",
-    Address: "臺東縣951綠島鄉環島公路2公里處",
-    Picture: {
-      PictureUrl1: "https://www.eastcoast-nsa.gov.tw/image/29042/640x480",
-      PictureDescription1: "柴口十分適合新手來體驗浮潛",
-    },
-    SrcUpdateTime: "2023-08-17T01:43:16+08:00",
-    UpdateTime: "2023-08-17T02:22:01+08:00",
-  },
-  {
-    ScenicSpotID: "C1_376540000A_000365",
-    ScenicSpotName: "石朗潛水區",
-    Address: "臺東縣951綠島鄉環島公路17公里處路旁",
-    Picture: {},
-    SrcUpdateTime: "2023-08-17T01:43:16+08:00",
-    UpdateTime: "2023-08-17T02:22:01+08:00",
-  },
-];
+import store from './../store'
+import scenicSpotsAPI from "../api/scenic-spots";
+import activitiesAPI from '../api/activities';
+import restaurantsAPI from '../api/restaurants';
 
 export default {
   components: {
@@ -286,11 +251,17 @@ export default {
   },
   created() {
     this.routeName = this.initialRouteName;
-    if(this.initialSearchKeyword && this.initialResultList) {
-      this.resultList = this.initialResultList
-      this.SearchKeyword = this.initialSearchKeyword
+    this.cardTitleFilter
+
+    if (this.initialResultList.length > 0) {
       this.isSearched = true
-    } 
+    }
+  },
+  mounted() {
+    window.addEventListener('resize', this.getDimensions)
+  },
+  unmounted() {
+    window.removeEventListener('resize', this.getDimensions)
   },
   data() {
     return {
@@ -299,7 +270,7 @@ export default {
       themeDropdownValue: "全部主題",
       monthDropdownValue: null,
       foodThemeDropdownValue: "全部分類",
-      SearchKeyword: "",
+      SearchKeyword: this.initialSearchKeyword ,
       scenicTheme: [
         {
           id: 0,
@@ -416,12 +387,16 @@ export default {
           url: "theme-food-bg-6.png",
         },
       ],
-      resultList: [],
+      resultList: this.initialResultList,
       emptyImageUrl: "noImage-255x200.png",
       isSearched: false,
+      screenWidth: document.documentElement.clientWidth,
     };
   },
   methods: {
+    getDimensions() {
+      this.screenWidth = document.documentElement.clientWidth
+    },
     cityDropdownHandler(cityName) {
       this.$refs.dropdownCityToggle.checked = false;
       this.cityDropdownValue = cityName;
@@ -435,9 +410,18 @@ export default {
       }
     },
     searchHandler() {
-      let keyword = this.SearchKeyword.trim();
+      let keyword = this.SearchKeyword
       let theme = "";
+      let citiesArr = this.cities.map((city)=> {
+          return city.name
+        })
+      let cityIndex = citiesArr.indexOf(this.cityDropdownValue)
+      let engCity = this.cities[cityIndex].engName
+      
       if (!keyword) {
+        this.$toast.warning("請輸入關鍵字!", {
+          timeout: 1500
+        })
         this.SearchKeyword = "";
         return;
       }
@@ -449,44 +433,240 @@ export default {
       ) {
         theme = this.themeDropdownValue;
       }
+
       if (this.routeName === "search-activity") {
         if (!this.monthDropdownValue) {
           this.monthDropdownValue = "選擇月份";
-          console.log(
-            `城市: ${this.cityDropdownValue}, 類別: ${theme}, 年月份: ${this.monthDropdownValue}, 關鍵字: ${keyword}`
-          );
-          this.fetchResultList();
+          
+          this.fetchActivities(engCity, this.monthDropdownValue, theme, keyword)
         } else {
-          let dateValue = this.monthDropdownValue.split("-");
-          let year = dateValue[0];
-          let month = dateValue[1];
-
-          console.log(
-            `城市: ${this.cityDropdownValue}, 類別: ${theme}, 年月份: ${year} 年 ${month}, 關鍵字: ${keyword}`
-          );
-          this.fetchResultList();
+          this.fetchActivities(engCity, this.monthDropdownValue, theme, keyword)
         }
       } else {
-        console.log(
-          "城市: " + this.cityDropdownValue + ", 類別: " + theme,
-          ", 關鍵字: " + keyword
-        );
-        this.fetchResultList();
+        if (this.routeName === "search-scenic-spot") {
+          this.fetchScenicSpots(engCity, theme, keyword)
+        } else {
+          this.fetchRestaurants(engCity, theme, keyword)
+        }
       }
-      this.SearchKeyword = "";
     },
     themBgFilter(bgUrl) {
       return require(`@/assets/images/pic/${bgUrl}`);
     },
-    //記得拆分景點、活動、餐廳的fetch methods
-    fetchResultList() {
-      this.resultList = dummyResultData.map((result) => ({
-        id: result.ScenicSpotID,
-        name: result.ScenicSpotName,
-        city: result.City ? result.City : "未提供",
-        picture: result.Picture,
-      }));
+    jumpHandler(id) {
+      console.log('jumpHandler')
+      if(this.routeName === "search-scenic-spot") {
+        this.$router.push({ path: `/home/search-scenic-spot/${id}` })
+      } else if (this.routeName === "search-activity") {
+        this.$router.push({ path: `/home/search-activity/${id}` })
+      } else {
+        this.$router.push({ path: `/home/search-restaurant/${id}` })
+      }
     },
+    async fetchScenicSpots(engCity, theme, keyword) {
+      try {
+        if (engCity === 'all' && theme === '全部主題') {
+          const response = await scenicSpotsAPI.getScenicSpotsByKeyword({ keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.ScenicSpotID,
+            name: result.ScenicSpotName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        } else if(engCity !== 'all' && theme === '全部主題') {
+          const response = await scenicSpotsAPI.getScenicSpotsByCity({ city: engCity, keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.ScenicSpotID,
+            name: result.ScenicSpotName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        } else if(engCity === 'all' && theme !== '全部主題') {
+          const response = await scenicSpotsAPI.getScenicSpotsByTheme({ theme, keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.ScenicSpotID,
+            name: result.ScenicSpotName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        } else {
+          const response = await scenicSpotsAPI.getScenicSpotsByCityAndTheme({ city: engCity, theme, keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.ScenicSpotID,
+            name: result.ScenicSpotName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        }
+      } catch(error) {
+        if(error.response.status === 401) {
+          store.dispatch("getToken");
+          this.$toast.success("憑證失效，已重新取得憑證，請重新搜尋!", {
+            timeout: 1500
+          })
+        } else {
+          console.log(error)
+        }
+      }
+    },
+    async fetchActivities(engCity, originalDate, theme, keyword) {
+      try {
+        /* 沒選月份-- 選擇月份  */
+        if (originalDate ==='選擇月份') {
+          if (engCity === 'all' && theme === '全部主題') {
+            // 每個都沒選
+            const response = await activitiesAPI.getActivitiesByKeyword({ keyword })
+
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            }));
+          } else if (engCity !== 'all' && theme === '全部主題') {
+            // 只選縣市
+            const response = await activitiesAPI.getActivitiesByCity({ city: engCity, keyword })
+
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            })); 
+          } else if (engCity === 'all' && theme !== '全部主題') {
+            // 只選主題
+            const response = await activitiesAPI.getActivitiesByTheme({ theme, keyword })
+            
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            }));
+          } else {
+            // 縣市＋主題
+            const response = await activitiesAPI.getActivitiesByCityAndTheme({ city: engCity, theme, keyword })
+            
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            }));
+          }
+        } else {
+          /* 選月份 */
+          let dateValue = originalDate.split("-");
+          let year = dateValue[0];
+          let month = dateValue[1];
+          if (engCity === 'all' && theme === '全部主題') {
+            // 只選日期 
+            const response = await activitiesAPI.getActivitiesByDate({ year, month, keyword })
+
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            }));
+          } else if (engCity !== 'all' && theme === '全部主題') {
+            // 選了縣市＋日期
+            const response = await activitiesAPI.getActivitiesByCityAndDate({ city: engCity, year, month, keyword })
+
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            }));
+          } else if (engCity === 'all' && theme !== '全部主題') {
+            // 選了日期＋主題 
+            const response = await activitiesAPI.getActivitiesByDateAndTheme({ year, month, theme, keyword })
+
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            }));
+          } else {
+            console.log('選了月份---', engCity, year, month, theme, keyword)
+            // 全選 
+            const response = await activitiesAPI.getActivitiesByAllOption({ city: engCity, year, month, theme, keyword })
+
+            this.resultList = response.data.map((result) => ({
+              id: result.ActivityID,
+              name: result.ActivityName,
+              city: result.City ? result.City : "未提供",
+              picture: result.Picture,
+            }));
+          } 
+        }
+      } catch(error) {
+        if(error.response.status === 401) {
+          store.dispatch("getToken");
+          this.$toast.success("憑證失效，已重新取得憑證，請重新搜尋!", {
+            timeout: 1500
+          })
+        } else {
+          console.log(error)
+        }
+      }
+    },
+    async fetchRestaurants(engCity, theme, keyword) {
+      try {
+        if (engCity === 'all' && theme === '全部分類') {
+          const response = await restaurantsAPI.getRestaurantsByKeyword({ keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.RestaurantID,
+            name: result.RestaurantName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        } else if(engCity !== 'all' && theme === '全部分類') {
+          const response = await restaurantsAPI.getRestaurantsByCity({ city: engCity, keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.RestaurantID,
+            name: result.RestaurantName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        } else if(engCity === 'all' && theme !== '全部分類') {
+          const response = await restaurantsAPI.getRestaurantsByTheme({ theme, keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.RestaurantID,
+            name: result.RestaurantName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        } else {
+          const response = await restaurantsAPI.getRestaurantsByCityAndTheme({ city: engCity, theme, keyword })
+
+          this.resultList = response.data.map((result) => ({
+            id: result.RestaurantID,
+            name: result.RestaurantName,
+            city: result.City ? result.City : "未提供",
+            picture: result.Picture,
+          }));
+        }
+      } catch(error) {
+        if(error.response.status === 401) {
+          store.dispatch("getToken");
+          this.$toast.success("憑證失效，已重新取得憑證，請重新搜尋!", {
+            timeout: 1500
+          })
+        } else {
+          console.log(error)
+        }
+      }
+    }
   },
   computed: {
     ...mapState(['cities']),
@@ -501,6 +681,23 @@ export default {
       }
       return placeholder;
     },
+    cardTitleFilter() {
+      // 字數超過11要改成... >11
+      // 字數超過18要改成... >18
+      return this.resultList.map((card) => {
+        if(this.screenWidth < 768 && card.name.length > 18) {
+          let newName = card.name.slice(0,17) + "..."
+
+          return newName
+        } else if (this.screenWidth >= 768 && card.name.length > 11) {
+          let newName = card.name.slice(0,10) + "..."
+          
+          return newName
+        } else {
+          return card.name
+        }
+      })
+    },
   },
   watch: {
     initialRouteName(newValue) {
@@ -509,15 +706,28 @@ export default {
       this.SearchKeyword = '';
       this.isSearched = false
     },
-    // initialSearchKeyword(newValue) {
-    //   this.SearchKeyword = newValue;
-    // },
+    initialSearchKeyword(newValue) {
+      this.SearchKeyword = newValue;
+    },
     initialResultList(newValue) {
       if(newValue.length > 0 ) {
         this.SearchKeyword = '';
       } 
       this.resultList = newValue;
-    }
+      this.isSearched = true
+    },
+    resultList(newValue) {
+      if(newValue.length > 0 ) {
+        this.SearchKeyword = '';
+      }
+      this.resultList = newValue
+      this.isSearched = true
+    },
+    $route: function(to, from) {
+      if (to.path !== from.path) {
+        this.isSearched = false
+      }
+    },
   },
 };
 </script>
@@ -703,13 +913,21 @@ export default {
     }
     &__result {
       margin-bottom: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       &__card-wrapper {
         margin-bottom: 21px;
+        width: 345px;
+        cursor: pointer;
         &__card-img {
           width: 345px;
           height: 160px;
           border-radius: 20px;
           overflow: hidden;
+          img {
+            transition: all .2s ease-out;
+          }
         }
         &__card-info {
           text-align: left;
@@ -821,12 +1039,20 @@ export default {
       }
       &__result {
         margin-bottom: 250px;
-        display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
         row-gap: 36px;
         column-gap: 30px;
         &__card-wrapper {
           margin: unset;
+          width: 255px;
+          &:hover {
+            .card-img {
+              img {
+                transform: scale(1.1);
+              }
+            }
+          }
           &__card-img {
             width: 255px;
             height: 200px;

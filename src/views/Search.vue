@@ -14,6 +14,11 @@ import restaurantsAPI from '../api/restaurants';
 import store from "./../store";
 
 export default {
+  props: {
+    routerResultList: {
+      type: Array
+    }
+  },
   components: {
     SharedSearchPage
   },
@@ -26,6 +31,16 @@ export default {
     } else if (this.keyword && this.routeName === 'search-restaurant') {
       this.fetchRestaurants()
     }
+
+    if(this.routerResultList) {
+      if(this.routerResultList.length === 0) {
+         this.$toast.info("目前無附近資訊，請重新搜尋!", {
+            timeout: 1500
+          })
+      } else {
+        this.resultList = this.routerResultList
+      }
+    }
   },
   data() {
     return {
@@ -37,7 +52,7 @@ export default {
   methods: {
     async fetchScenicSpots() {
       try {
-        let response = await scenicSpotsAPI.getScenicSpotsByKeyword({ keyword: this.keyword});
+        const response = await scenicSpotsAPI.getScenicSpotsByKeyword({ keyword: this.keyword});
         
         this.resultList = response.data.map((scenicSpot) => ({
           id: scenicSpot.ScenicSpotID,
@@ -56,7 +71,7 @@ export default {
     },
     async fetchActivities() {
       try {
-        let response = await activitiesAPI.getActivitiesByKeyword({ keyword: this.keyword});
+        const response = await activitiesAPI.getActivitiesByKeyword({ keyword: this.keyword});
         
         this.resultList = response.data.map((activity) => ({
           id: activity.ActivityID,
@@ -75,7 +90,7 @@ export default {
     },
     async fetchRestaurants() {
       try {
-        let response = await restaurantsAPI.getRestaurantsByKeyword({ keyword: this.keyword});
+        const response = await restaurantsAPI.getRestaurantsByKeyword({ keyword: this.keyword});
         
         this.resultList = response.data.map((restaurant) => ({
           id: restaurant.RestaurantID,
@@ -99,8 +114,8 @@ export default {
       if (to.path !== from.path) {
         this.routeName = this.$route.name
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

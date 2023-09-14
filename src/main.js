@@ -61,4 +61,5 @@ Vue.use(Toast, {
   hideProgressBar: false,
   closeButton: "button",
   icon: true,
+  maxToasts: 3,
 });

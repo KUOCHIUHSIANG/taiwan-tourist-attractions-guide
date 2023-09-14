@@ -44,7 +44,7 @@ export default {
   methods: {
     async fetchActivity(id) {
       try {
-        let response = await activitiesAPI.getActivity({ id });
+        const response = await activitiesAPI.getActivity({ id });
         
         if(response.data.length === 0) {
           this.$toast.error("此活動不存在", {
@@ -65,7 +65,6 @@ export default {
           city: activityData.City ? activityData.City : '未提供',
           class1: activityData.Class1,
           class2: activityData.Class2,
-          class3: activityData.Class3,
           websiteUrl: activityData.WebsiteUrl,
           picture: activityData.Picture,
           position: activityData.Position,
@@ -101,8 +100,9 @@ export default {
         const year = date.getFullYear();
         let month = date.getMonth() + 1;
         let day = date.getDate();
+        const amount = 4
 
-        let response = await activitiesAPI.getRecentActivitiesByCity({year, month, day, city})
+        const response = await activitiesAPI.getRecentActivitiesByCity({year, month, day, city, amount})
 
         if (response.statusText !== "OK") {
           throw new Error(response);
