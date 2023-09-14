@@ -45,7 +45,6 @@ export default {
     }
   },
   created() {
-    this.cards = this.initialRecentActivities
     this.cardTitleFilter
   },
   mounted() {

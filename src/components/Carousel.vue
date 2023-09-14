@@ -101,9 +101,6 @@ export default {
       type: Array
     }
   },
-  created() {
-    this.cardList = this.initialCardList
-  },
   data() {
     return { 
       cardList: [],

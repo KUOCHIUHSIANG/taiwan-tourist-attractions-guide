@@ -44,7 +44,6 @@ export default {
   created() {
     this.title = this.initialTitle
     this.subTitle = this.initialSubTitle
-    this.cardList = this.initialCardList
   },
   data() {
     return {
