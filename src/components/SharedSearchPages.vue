@@ -476,7 +476,6 @@ export default {
       return require(`@/assets/images/pic/${bgUrl}`);
     },
     jumpHandler(id) {
-      console.log('jumpHandler')
       if(this.routeName === "search-scenic-spot") {
         this.$router.push({ path: `/home/search-scenic-spot/${id}` })
       } else if (this.routeName === "search-activity") {

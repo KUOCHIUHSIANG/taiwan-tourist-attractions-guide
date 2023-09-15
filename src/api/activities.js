@@ -8,6 +8,9 @@ export default {
     if (month === 12) {
       dueMonth = 2;
       dueYear += 1;
+    } else if (month === 11) {
+      dueMonth = 1;
+      dueYear += 1;
     } else {
       dueMonth = month + 2;
     }
@@ -24,6 +27,9 @@ export default {
     month = Number(month);
     if (month === 12) {
       dueMonth = 2;
+      dueYear += 1;
+    } else if (month === 11) {
+      dueMonth = 1;
       dueYear += 1;
     } else {
       dueMonth = month + 2;
@@ -52,6 +58,9 @@ export default {
     if (month === 12) {
       dueMonth = 2;
       dueYear += 1;
+    } else if (month === 11) {
+      dueMonth = 1;
+      dueYear += 1;
     } else {
       dueMonth = month + 2;
     }
@@ -72,6 +81,9 @@ export default {
     month = Number(month);
     if (month === 12) {
       dueMonth = 2;
+      dueYear += 1;
+    } else if (month === 11) {
+      dueMonth = 1;
       dueYear += 1;
     } else {
       dueMonth = month + 2;
@@ -94,6 +106,9 @@ export default {
     if (month === 12) {
       dueMonth = 2;
       dueYear += 1;
+    } else if (month === 11) {
+      dueMonth = 1;
+      dueYear += 1;
     } else {
       dueMonth = month + 2;
     }
@@ -111,6 +126,9 @@ export default {
     month = Number(month);
     if (month === 12) {
       dueMonth = 2;
+      dueYear += 1;
+    } else if (month === 11) {
+      dueMonth = 1;
       dueYear += 1;
     } else {
       dueMonth = month + 2;
@@ -132,6 +150,9 @@ export default {
     month = Number(month);
     if (month === 12) {
       dueMonth = 2;
+      dueYear += 1;
+    } else if (month === 11) {
+      dueMonth = 1;
       dueYear += 1;
     } else {
       dueMonth = month + 2;
